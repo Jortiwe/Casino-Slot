@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import "./Blackjack.css";
+
 type Card = {
   suit: string;
   value: string;
@@ -21,15 +23,47 @@ function getCardValue(card: Card): number {
   return parseInt(card.value);
 }
 
-export default function Blackjack() {
+export default function Blackjack({
+  balance,
+  setBalance,
+  userId
+}: {
+  balance: number;
+  setBalance: React.Dispatch<React.SetStateAction<number>>;
+  userId: number;
+}) {
   const [deck, setDeck] = useState<Card[]>([]);
   const [playerHand, setPlayerHand] = useState<Card[]>([]);
   const [dealerHand, setDealerHand] = useState<Card[]>([]);
-  const [balance, setBalance] = useState(500);
   const [bet, setBet] = useState(50);
   const [message, setMessage] = useState("");
   const [isRoundActive, setIsRoundActive] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // 🔹 Traer saldo inicial desde la DB
+  useEffect(() => {
+    const fetchBalance = async () => {
+      if (!userId) return;
+      try {
+        const res = await axios.get(`http://localhost:5000/users/${userId}`);
+        setBalance(res.data.balance);
+      } catch (err) {
+        console.error("Error trayendo saldo:", err);
+      }
+    };
+    fetchBalance();
+  }, [userId, setBalance]);
+
+  // 🔹 Actualizar saldo en backend
+  const actualizarSaldoBD = async (nuevoSaldo: number) => {
+    if (!userId) return;
+    try {
+      await axios.put(`http://localhost:5000/users/${userId}/balance`, { balance: nuevoSaldo });
+      setBalance(nuevoSaldo);
+    } catch (err) {
+      console.error("Error actualizando saldo:", err);
+    }
+  };
 
   const getHandValue = (hand: Card[]): number => {
     let value = hand.reduce((acc, c) => acc + getCardValue(c), 0);
@@ -41,15 +75,12 @@ export default function Blackjack() {
     return value;
   };
 
-  // Función para repartir cartas con animación y flip
   const dealCard = async (card: Card, target: "player" | "dealer", hideDealerSecond = true) => {
     const setHand = target === "player" ? setPlayerHand : setDealerHand;
 
-    // Añadir carta inicialmente oculta
     setHand(prev => [...prev, { ...card, isFaceUp: false }]);
     await new Promise(res => setTimeout(res, 300));
 
-    // Voltear carta (la segunda del dealer permanece oculta al inicio)
     setHand(prev =>
       prev.map((c, i) => {
         if (i === prev.length - 1) {
@@ -66,27 +97,35 @@ export default function Blackjack() {
   // Iniciar nueva ronda
   const startGame = async () => {
     if (isAnimating || isRoundActive) return;
+    if (bet > balance) {
+      alert("No tienes suficiente saldo para esta apuesta");
+      return;
+    }
+
     setIsAnimating(true);
     setIsRoundActive(false);
     setMessage("");
     setPlayerHand([]);
     setDealerHand([]);
 
+    // ⚡ Descontar apuesta de inmediato
+    const saldoPostApuesta = balance - bet;
+    setBalance(saldoPostApuesta);
+    await actualizarSaldoBD(saldoPostApuesta);
+
     const newDeck = createDeck();
     setDeck(newDeck);
 
-    // Repartir cartas iniciales
     await dealCard(newDeck[0], "player");
     await dealCard(newDeck[1], "player");
-    await dealCard(newDeck[2], "dealer"); // visible
-    await dealCard(newDeck[3], "dealer", true); // oculta
+    await dealCard(newDeck[2], "dealer");
+    await dealCard(newDeck[3], "dealer", true);
 
     setIsRoundActive(true);
     setIsAnimating(false);
     setMessage("Tu turno...");
   };
 
-  // Pedir carta
   const hit = async () => {
     if (!isRoundActive || isAnimating || deck.length === 0) return;
     setIsAnimating(true);
@@ -103,12 +142,10 @@ export default function Blackjack() {
     setIsAnimating(false);
   };
 
-  // Plantarse
   const stand = async () => {
     if (!isRoundActive || isAnimating) return;
     setIsAnimating(true);
 
-    // Voltear la segunda carta del dealer antes de sacar nuevas cartas
     let dealer = dealerHand.map((c, i) =>
       i === 1 ? { ...c, isFaceUp: true } : c
     );
@@ -119,12 +156,10 @@ export default function Blackjack() {
     while (getHandValue(dealer) < 17 && restDeck.length > 0) {
       const [card, ...rest] = restDeck;
 
-      // Añadir carta oculta primero
       dealer.push({ ...card, isFaceUp: false });
       setDealerHand([...dealer]);
       await new Promise(r => setTimeout(r, 300));
 
-      // Voltear carta recién añadida
       dealer = dealer.map((c, i) =>
         i === dealer.length - 1 ? { ...c, isFaceUp: true } : c
       );
@@ -134,83 +169,82 @@ export default function Blackjack() {
       await new Promise(r => setTimeout(r, 300));
     }
 
-    checkWinner(dealer);
+    // 🔹 Pasar saldo actual descontando la apuesta
+    checkWinner(dealer, balance);
     setIsRoundActive(false);
     setIsAnimating(false);
   };
 
   // Determinar ganador
-  const checkWinner = (dealer: Card[]) => {
+  const checkWinner = (dealer: Card[], saldoActual: number) => {
     const playerScore = getHandValue(playerHand);
     const dealerScore = getHandValue(dealer);
 
+    let saldoFinal = saldoActual;
+
     if (playerScore > 21) {
       setMessage("Te pasaste. Pierdes 😢");
-      setBalance(prev => prev - bet);
     } else if (dealerScore > 21 || playerScore > dealerScore) {
+      saldoFinal += bet * 2; // ganancia + apuesta inicial
       setMessage("¡Ganaste! 🎉");
-      setBalance(prev => prev + bet);
     } else if (dealerScore === playerScore) {
+      saldoFinal += bet; // devolver apuesta
       setMessage("Empate 🤝");
     } else {
       setMessage("La banca gana 💀");
-      setBalance(prev => prev - bet);
     }
+
+    setBalance(saldoFinal);
+    actualizarSaldoBD(saldoFinal);
   };
 
   return (
-  <div className="blackjack-container">
-  <h1 className="title">🃏 BLACKJACK 🃏</h1>
+    <div className="blackjack-container">
+      <h1 className="title">🃏 BLACKJACK 🃏</h1>
 
-  <div className="hand-container">
-    <h2>Cartas de la Banca</h2>
-    <div className="hand">
-      {dealerHand.map((c, i) => (
-        <div
-          key={i}
-          className={`card ${c.isFaceUp ? "face-up" : "face-down"}`}
-        >
-          <span className="card-content">{c.isFaceUp ? `${c.value}${c.suit}` : "❓"}</span>
+      <div className="hand-container">
+        <h2>Cartas de la Banca</h2>
+        <div className="hand">
+          {dealerHand.map((c, i) => (
+            <div key={i} className={`card ${c.isFaceUp ? "face-up" : "face-down"}`}>
+              <span className="card-content">{c.isFaceUp ? `${c.value}${c.suit}` : "❓"}</span>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
+      </div>
 
-  <div className="hand-container">
-    <h2>Tus Cartas</h2>
-    <div className="hand">
-      {playerHand.map((c, i) => (
-        <div
-          key={i}
-          className={`card ${c.isFaceUp ? "face-up" : "face-down"}`}
-        >
-          <span className="card-content">{c.isFaceUp ? `${c.value}${c.suit}` : "❓"}</span>
+      <div className="hand-container">
+        <h2>Tus Cartas</h2>
+        <div className="hand">
+          {playerHand.map((c, i) => (
+            <div key={i} className={`card ${c.isFaceUp ? "face-up" : "face-down"}`}>
+              <span className="card-content">{c.isFaceUp ? `${c.value}${c.suit}` : "❓"}</span>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
+
+      <div className="controls">
+        <p className="balance">💰 Saldo: ${balance}</p>
+        <label htmlFor="bet">🎲 Apuesta: ${bet}</label>
+        <input
+          id="bet"
+          type="range"
+          min={1}
+          max={balance}
+          value={bet}
+          onChange={(e) => setBet(parseInt(e.target.value))}
+          disabled={isRoundActive}
+        />
+
+        <div className="buttons">
+          <button onClick={startGame} disabled={isRoundActive}>Nueva Ronda</button>
+          <button onClick={hit} disabled={!isRoundActive}>Pedir</button>
+          <button onClick={stand} disabled={!isRoundActive}>Plantarse</button>
+        </div>
+
+        <p className="message">{message}</p>
+      </div>
     </div>
-  </div>
-
-  <div className="controls">
-    <p className="balance">💰 Saldo: ${balance}</p>
-    <label htmlFor="bet">🎲 Apuesta: ${bet}</label>
-    <input
-      id="bet"
-      type="range"
-      min={1}
-      max={balance}
-      value={bet}
-      onChange={(e) => setBet(parseInt(e.target.value))}
-      disabled={isRoundActive}
-    />
-
-    <div className="buttons">
-      <button onClick={startGame} disabled={isRoundActive}>Nueva Ronda</button>
-      <button onClick={hit} disabled={!isRoundActive}>Pedir</button>
-      <button onClick={stand} disabled={!isRoundActive}>Plantarse</button>
-    </div>
-
-    <p className="message">{message}</p>
-  </div>
-</div>
   );
 }

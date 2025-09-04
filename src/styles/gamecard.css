@@ -1,32 +1,30 @@
 /* CONTENEDOR DE CARDS */
 .game-cards-container {
-  display: flex;
-  justify-content: center;
-  align-items: stretch; /* todas las cards tienen la misma altura */
+  display: grid;
   gap: 2rem;
   width: 100%;
   margin-top: 2rem;
-  user-select: none; /* evita seleccionar texto */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  flex-wrap: wrap; /* permite que las cards bajen de fila en pantallas pequeñas */
+  user-select: none;
+
+  /* 2 columnas fijas en pantallas grandes */
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
 }
 
-/* CADA CARD */
+/* CARD */
 .game-card {
-  flex: 1 1 300px; /* crece, encoge, pero mínimo 200px */
-  max-width: 500px; /* en escritorio */
-  min-width: 300px; /* en móvil y tablet */
+  width: 100%;
+  max-width: 500px;   /* 👈 que se vean grandes */
+  min-height: 400px;  /* altura mayor */
   background: #1F1F1F;
   border: 2px solid #FFD700;
   border-radius: 16px;
   padding: 2rem 1rem;
   text-align: center;
-  transition: 0.3s;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: all 0.3s ease;
 }
 
 .game-card:hover {
@@ -34,12 +32,12 @@
 }
 
 .game-icon {
-  font-size: 4rem;
+  font-size: clamp(3rem, 5vw, 5rem);
   margin-bottom: 1.5rem;
 }
 
 .game-card h2 {
-  font-size: 1.5rem;
+  font-size: clamp(1.5rem, 2vw, 2rem);
   margin-bottom: 1rem;
 }
 
@@ -48,11 +46,11 @@
   background: #E50914;
   color: white;
   border: none;
-  padding: 0.6rem 1.5rem;
+  padding: 0.8rem 2rem;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .game-card button:hover {
@@ -61,27 +59,32 @@
 }
 
 /* RESPONSIVO */
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .game-cards-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem; /* un poco más compacto */
+    grid-template-columns: 1fr; /* en pantallas medianas → 1 por fila */
   }
 
   .game-card {
-    max-width: 90%;
-    min-width: 400px; /* ahora mantiene un tamaño mínimo decente */
+    max-width: 600px;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .game-card {
+    width: 90%;
+    max-width: 350px;
   }
 
   .game-icon {
-    font-size: 5rem;
+    font-size: 3.5rem;
   }
 
   .game-card h2 {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
   }
 
   .game-card button {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }

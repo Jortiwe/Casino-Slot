@@ -101,10 +101,23 @@ const App: React.FC = () => {
         );
         break;
       case "ruleta":
-        GameComponent = <Ruleta />;
+        GameComponent = (
+          <Ruleta
+            balance={balance}
+            setBalance={setBalance}
+            userId={userId}
+          />
+        );
         break;
+
       case "blackjack":
-        GameComponent = <Blackjack />;
+        GameComponent = (
+          <Blackjack
+            balance={balance}
+            setBalance={setBalance}
+            userId={userId}
+          />
+        );
         break;
       case "other":
         GameComponent = <p>Juego en desarrollo...</p>;
@@ -122,6 +135,11 @@ const App: React.FC = () => {
       </div>
     );
   };
+  // 🔹 Guardar balance actualizado en localStorage
+useEffect(() => {
+  localStorage.setItem("balance", balance.toString());
+}, [balance]);
+
 
   return (
     <div className="app-container">

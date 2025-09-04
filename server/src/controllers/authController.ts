@@ -13,7 +13,9 @@ function handleError(err: unknown) {
   return String(err);
 }
 
+// ===================================
 // 🔹 Registro de usuario
+// ===================================
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
@@ -46,7 +48,9 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
+// ===================================
 // 🔹 Login de usuario
+// ===================================
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -82,7 +86,9 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+// ===================================
 // 🔹 Actualizar saldo
+// ===================================
 export const updateBalance = async (req: Request, res: Response) => {
   const { userId, newBalance } = req.body;
   if (!userId || newBalance === undefined) {
@@ -100,6 +106,10 @@ export const updateBalance = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al actualizar saldo" });
   }
 };
+
+// ===================================
+// 🔹 Cambiar contraseña
+// ===================================
 export const changePassword = async (req: Request, res: Response) => {
   const { userId, newPassword } = req.body;
   if (!userId || !newPassword) {
