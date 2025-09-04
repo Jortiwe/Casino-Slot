@@ -138,13 +138,21 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="header">
-      <h1 className="logo">CASINO</h1>
+      <h1 
+        className="logo" 
+        onClick={scrollToHero} 
+        style={{ cursor: "pointer" }}
+        >CASINO</h1>
+
 
       <nav className="nav">
         <a href="#" onClick={(e) => { e.preventDefault(); scrollToHero(); }}>Inicio</a>
         <a href="#" onClick={(e) => { e.preventDefault(); scrollToGames(); }}>Juegos</a>
-        <a href="#" onClick={(e) => { e.preventDefault(); onMyAccount(); }}>Mi Cuenta</a>
+        {isLoggedIn && (
+          <a href="#" onClick={(e) => { e.preventDefault(); onMyAccount(); }}>Mi Cuenta</a>
+        )}
       </nav>
+
 
       <div className="auth-buttons">
         {!isLoggedIn ? (
