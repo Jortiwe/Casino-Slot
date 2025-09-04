@@ -1,0 +1,63 @@
+.mi-cuenta {
+  background: #1f2833;
+  color: #c5c6c7;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.mi-cuenta h2 {
+  color: #ffd700;
+  margin-bottom: 1rem;
+}
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ffd700;
+  margin-bottom: 0.5rem;
+}
+
+.info {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.change-password, .loan-section {
+  margin-bottom: 1.5rem;
+}
+
+input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  margin: 0.5rem 0;
+  width: 100%;
+  max-width: 300px;
+}
+
+button {
+  padding: 0.6rem 1.2rem;
+  background: #ffd700;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #ffcc00;
+}

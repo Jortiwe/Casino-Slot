@@ -100,3 +100,23 @@ export const updateBalance = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al actualizar saldo" });
   }
 };
+export const changePassword = async (req: Request, res: Response) => {
+  const { userId, newPassword } = req.body;
+  if (!userId || !newPassword) {
+    return res.status(400).json({ error: "Faltan datos" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const result = await pool.query(
+      "UPDATE users SET password=$1 WHERE id=$2 RETURNING id, username, email, balance",
+      [hashedPassword, userId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err: unknown) {
+    console.error("Error en changePassword:", handleError(err));
+    res.status(500).json({ error: "Error al cambiar contraseña" });
+  }
+};

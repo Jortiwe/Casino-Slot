@@ -23,6 +23,7 @@ interface HeaderProps {
   scrollToGames: () => void;
   scrollToHero: () => void;
   onLogout: () => void;
+  onMyAccount: () => void; 
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -34,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({
   scrollToGames,
   scrollToHero,
   onLogout,
+  onMyAccount,
 }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
@@ -141,7 +143,7 @@ const Header: React.FC<HeaderProps> = ({
       <nav className="nav">
         <a href="#" onClick={(e) => { e.preventDefault(); scrollToHero(); }}>Inicio</a>
         <a href="#" onClick={(e) => { e.preventDefault(); scrollToGames(); }}>Juegos</a>
-        <a href="#" onClick={(e) => e.preventDefault()}>Mi Cuenta</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); onMyAccount(); }}>Mi Cuenta</a>
       </nav>
 
       <div className="auth-buttons">
