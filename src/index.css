@@ -1,0 +1,90 @@
+/* index.css */
+
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Tipografía global */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #0B0C10;
+  color: #FFFFFF;
+  line-height: 1.6;
+}
+
+/* Enlaces globales */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: #FFD700;
+}
+
+/* Botones globales */
+button {
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+/* Inputs globales */
+input {
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  outline: none;
+}
+
+/* Contenedores generales */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Secciones */
+section {
+  padding: 2rem 1rem;
+}
+
+/* H1 global */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  color: #FFD700;
+}
+
+/* Grid general para juegos o secciones que lo necesiten */
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Estilos de hover y transición globales */
+.transition {
+  transition: all 0.3s ease-in-out;
+}
+

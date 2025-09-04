@@ -1,0 +1,176 @@
+/* HEADER PRINCIPAL */
+.header {
+  display: flex; /* FLEX PARA ALINEAR LOGO, NAV Y BOTONES */
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #0B0C10;
+  border-bottom: 2px solid #FFD700;
+}
+
+/* LOGO GRANDE */
+.logo {
+  font-size: 2.5rem; /* TAMAÑO DEL TEXTO DEL LOGO */
+  font-weight: bold;
+  color: #FFD700;
+  user-select: none; /* NO SE PUEDE SELECCIONAR EL LOGO */
+}
+
+/* NAVEGACION CENTRAL */
+.nav {
+  display: none; /* OCULTO POR DEFECTO EN MÓVIL */
+  gap: 2rem;
+  justify-content: center;
+  flex: 1; /* OCUPA EL ESPACIO CENTRAL */
+}
+
+.nav a {
+  color: #C5C6C7;
+  text-decoration: none; /* EVITA SUBRAYADO */
+  font-weight: bold;
+  font-size: 1.2rem;
+  user-select: none; /* EVITA QUE EL TEXTO SE SELECCIONE */
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.nav a:hover {
+  color: #FFD700;
+}
+
+.nav a:active {
+  outline: none;
+}
+
+/* BOTONES DE AUTENTICACIÓN */
+.auth-buttons {
+  display: flex;
+  gap: 0.5rem;
+  min-width: 300px; /* RESERVA ESPACIO PARA NO MOVER ELEMENTOS */
+  justify-content: flex-end;
+}
+
+.auth-buttons button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  font-size: 1rem;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+/* ESTILOS INDIVIDUALES DE BOTONES */
+.register-btn {
+  background: #FFD700;
+  color: black;
+}
+.register-btn:hover {
+  background: #E50914;
+  color: white;
+}
+
+.login-btn {
+  background: #FFD700;
+  color: black;
+}
+.login-btn:hover {
+  background: #E50914;
+  color: white;
+}
+
+.logout-btn {
+  background: #E50914;
+  color: white;
+}
+.logout-btn:hover {
+  background: #FFD700;
+  color: black;
+}
+
+/* RESPONSIVO: MOSTRAR NAV EN PANTALLAS GRANDES */
+@media (min-width: 768px) {
+  .nav {
+    display: flex;
+  }
+}
+
+/* MODAL GENERAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* CONTENIDO DEL MODAL */
+.modal-content {
+  background-color: #1F1F1F;
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  text-align: center;
+  min-width: 350px;
+  max-width: 500px;
+  position: relative;
+}
+
+.modal-content h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #FFD700;
+}
+
+.modal-content input {
+  width: 80%;
+  padding: 0.8rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+}
+
+/* BOTON DEL MODAL */
+.modal-btn {
+  width: 60%;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  border-radius: 12px;
+  font-weight: bold;
+  border: none;
+  background: #FFD700;
+  color: black;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.modal-btn:hover {
+  background: #E50914;
+  color: white;
+}
+
+/* BOTON DE CERRAR MODAL */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: #E50914;
+  color: white;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  background: #FFD700;
+  color: black;
+}

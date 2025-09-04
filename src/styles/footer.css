@@ -1,0 +1,41 @@
+/* BODY Y CONTENEDOR PRINCIPAL PARA FOOTER FIJO ABAJO */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* NECESARIO PARA que flex funcione */
+}
+
+#root { /* o tu contenedor principal, por ejemplo App */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* OCUPA TODA LA ALTURA DE LA PANTALLA */
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content {
+  flex: 1; /* OCUPA el espacio disponible y empuja el footer hacia abajo */
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  color: #C5C6C7;
+  font-size: 0.9rem;
+  border-top: 2px solid #FFD700;
+  background: #0B0C10;
+}
+
+.footer .links {
+  margin-bottom: 0.5rem;
+}
+
+.footer .links a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: #C5C6C7;
+  transition: color 0.3s;
+}
+.footer .links a:hover {
+  color: #FFD700;
+}

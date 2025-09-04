@@ -1,0 +1,168 @@
+/* Contenedor principal del Blackjack */
+.blackjack-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+/* Contenedor interno del juego */
+.blackjack-container {
+  background: #1f3b2e; /* verde mesa */
+  border: 6px solid #6b4b2c; /* borde café */
+  border-radius: 16px;
+  padding: 20px;
+  width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white; /* texto general */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Título del juego */
+.blackjack-container .title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+  text-align: center;
+}
+
+/* Contenedor de las manos */
+.blackjack-container .hand-container {
+  width: 100%;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.blackjack-container .hand-container h2 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #fefefe;
+}
+
+.blackjack-container .hand {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  perspective: 600px; /* para flip 3D */
+  min-height: 100px; /* evita que todo se mueva */
+}
+
+/* Cartas */
+.blackjack-container .card {
+  width: 64px;
+  height: 96px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+  position: relative;
+}
+
+.blackjack-container .card.face-up {
+  transform: rotateY(0deg);
+  background: white;
+  color: black;
+}
+
+.blackjack-container .card.face-down {
+  transform: rotateY(180deg);
+  background: #374151;
+  color: #374151;
+}
+
+.blackjack-container .card-content {
+  backface-visibility: hidden;
+  position: absolute;
+}
+
+/* Controles */
+.blackjack-container .controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.blackjack-container .controls input[type="range"] {
+  width: 50%;
+  color: #29da2f;
+}
+
+/* Botones */
+.blackjack-container .buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.blackjack-container .buttons button {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.blackjack-container .buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blackjack-container .buttons button:nth-child(1) {
+  background: #facc15;
+  color: black;
+}
+
+.blackjack-container .buttons button:nth-child(2) {
+  background: #3b82f6;
+  color: white;
+}
+
+.blackjack-container .buttons button:nth-child(3) {
+  background: #ef4444;
+  color: white;
+}
+
+/* Mensajes */
+.blackjack-container .message {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 8px;
+  text-align: center;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
+  min-height: 24px; /* evita que el texto mueva todo */
+}
+
+/* Titulos y textos internos */
+.blackjack-container h1,
+.blackjack-container p,
+.blackjack-container label {
+  color: white;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .blackjack-container {
+    width: 90%;
+    padding: 16px;
+  }
+
+  .blackjack-container .title {
+    font-size: 1.6rem;
+  }
+
+  .blackjack-container .hand {
+    min-height: 80px;
+  }
+}

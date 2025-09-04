@@ -1,0 +1,91 @@
+/* SlotMachine.css */
+
+/* Contenedor general */
+.slot-machine-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 2rem;
+  margin-top: 40px;
+  user-select: none;
+}
+
+/* Saldo y apuesta */
+.bet-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 6px;
+}
+
+.bet-section input[type="range"] {
+  width: 220px;
+}
+
+.bet-value {
+  min-width: 56px;  
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* Zona de rodillos */
+.reels {
+  display: flex;
+  gap: 18px;
+  margin: 16px 0 20px;
+}
+
+.reel {
+  width: 80px;
+  height: 80px;            
+  overflow: hidden;
+  border: 3px solid #333;
+  border-radius: 12px;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+
+.symbols {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;  
+}
+
+.symbols span {
+  height: 80px;            
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+/* Botón */
+.spin-button {
+  padding: 10px 22px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background: #ffcc00;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  min-width: 220px;        
+}
+
+.spin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mensaje con alto fijo para no empujar el layout */
+.message-area {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-area p {
+  margin: 6px 0 0;
+  font-size: 1.1rem;
+}

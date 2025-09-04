@@ -1,0 +1,82 @@
+/* CONTENEDOR DE CARDS */
+.game-cards-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; /* hace que todas las cards tengan la misma altura */
+  gap: 2rem;
+  width: 100%;
+  margin-top: 2rem;
+  user-select: none; /* evita seleccionar texto */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* CADA CARD */
+.game-card {
+  flex: 1; /* que cada card ocupe igual */
+  max-width: 300px; /* en escritorio */
+  min-width: 200px; /* en móvil */
+  background: #1F1F1F;
+  border: 2px solid #FFD700;
+  border-radius: 16px;
+  padding: 2rem 1rem;
+  text-align: center;
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.game-card:hover {
+  transform: scale(1.05);
+}
+
+.game-icon {
+  font-size: 4rem; /* más grande */
+  margin-bottom: 1.5rem;
+}
+
+.game-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.game-card button {
+  margin-top: auto;
+  background: #E50914;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.game-card button:hover {
+  background: #FFD700;
+  color: black;
+}
+
+/* RESPONSIVO */
+@media (max-width: 767px) {
+  .game-cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .game-card {
+    max-width: 90%;
+    min-width: unset;
+    margin-bottom: 2rem;
+  }
+  .game-icon {
+    font-size: 5rem;
+  }
+  .game-card h2 {
+    font-size: 1.8rem;
+  }
+  .game-card button {
+    font-size: 1.1rem;
+  }
+}

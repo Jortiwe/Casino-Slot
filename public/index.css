@@ -1,0 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #0B0C10;
+  color: #FFFFFF;
+  line-height: 1.6;
+}
+/* Contenedor de la sección central */
+.app-container section {
+  max-width: 800px;
+  margin: 2rem auto;
+  background-color: #1F2833;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Párrafos */
+section p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #C5C6C7;
+}
+
+/* Listas */
+section ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+section ul li {
+  margin-bottom: 0.5rem;
+  color: #FFFFFF;
+}
+
+/* Enlaces dentro de la sección */
+section a {
+  color: #FFD700;
+}
+
+section a:hover {
+  color: #FFAA00;
+}
+
+/* Botones dentro de las secciones */
+section button {
+  background-color: #45A29E;
+  color: #FFFFFF;
+  padding: 0.6rem 1.2rem;
+  margin-top: 1rem;
+}
+
+section button:hover {
+  background-color: #66FCF1;
+  color: #0B0C10;
+}
+
+/* Formulario de contacto */
+form label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+  color: #FFFFFF;
+}
+
+form input, form textarea {
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: #0B0C10;
+  color: #FFFFFF;
+  border: 1px solid #45A29E;
+  font-size: 1rem;
+}
+
+form input::placeholder, form textarea::placeholder {
+  color: #C5C6C7;
+}
+
+form button[type="submit"] {
+  background-color: #FFD700;
+  color: #0B0C10;
+}
+
+form button[type="submit"]:hover {
+  background-color: #FFAA00;
+}
+
+/* Títulos */
+section h1 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
