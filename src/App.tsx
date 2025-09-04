@@ -99,7 +99,11 @@ const App: React.FC = () => {
     fetchBalance();
   }, [userId]);
 
-  const scrollToHero = () => setActivePage("home");
+  const scrollToHero = () => {
+    setActivePage("home");
+    setActiveGame(null); // ❌ Cierra cualquier juego activo
+  };
+  
   const scrollToGames = () => setActivePage("games");
 
   const handleSelectGame = (game: "slot" | "ruleta" | "blackjack" | "other") => {
