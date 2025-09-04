@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 import authRoutes from "./routes/authRoutes"; // rutas de register/login
 
 const app = express();
@@ -21,3 +22,5 @@ app.use("/api/auth", authRoutes);
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));

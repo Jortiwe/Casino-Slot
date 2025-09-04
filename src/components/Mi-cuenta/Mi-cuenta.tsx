@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Mi-Cuenta.css";
 
 interface User {
@@ -6,7 +6,7 @@ interface User {
   username: string;
   email: string;
   balance: number;
-  profilePic?: string;
+  profile_pic?: string;
 }
 
 interface MiCuentaProps {
@@ -17,16 +17,25 @@ interface MiCuentaProps {
 const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
   const [newPassword, setNewPassword] = useState("");
   const [loanAmount, setLoanAmount] = useState<number>(0);
-  const [profilePic, setProfilePic] = useState(user.profilePic || "");
+  const [profilePic, setProfilePic] = useState("");
 
-  // 🔹 Cambiar contraseña (requiere endpoint en backend)
+  // 🔹 Mantener profilePic actualizado si cambia user desde afuera
+  useEffect(() => {
+    setProfilePic(user.profile_pic ? `http://localhost:5000${user.profile_pic}` : "/default-profile.png");
+  }, [user.profile_pic]);
+
+  // 🔹 Cambiar contraseña
   const handlePasswordChange = async () => {
     if (!newPassword) return alert("Ingresa una nueva contraseña");
 
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch("http://localhost:5000/api/auth/change-password", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ userId: user.id, newPassword }),
       });
 
@@ -38,7 +47,7 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
         alert(data.error || "Error al actualizar contraseña");
       }
     } catch (err) {
-      console.error("Error:", err);
+      console.error(err);
       alert("Error de conexión con el servidor");
     }
   };
@@ -47,7 +56,7 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
   const handleLoan = async () => {
     if (loanAmount <= 0) return alert("Ingresa un monto válido");
 
-    const newBalance = user.balance + loanAmount;
+    const newBalance = Number(user.balance) + loanAmount;
 
     try {
       const res = await fetch("http://localhost:5000/api/auth/balance", {
@@ -58,28 +67,66 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
 
       const data = await res.json();
       if (res.ok) {
-        setUser(data);
+        setUser(data); // actualiza usuario global
         setLoanAmount(0);
         alert("Préstamo acreditado ✅");
       } else {
         alert(data.error || "Error al pedir préstamo");
       }
     } catch (err) {
-      console.error("Error:", err);
+      console.error(err);
       alert("Error de conexión con el servidor");
     }
   };
 
-  // 🔹 Subir foto (solo local, falta guardar en backend)
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 🔹 Subir foto de perfil
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfilePic(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    const formData = new FormData();
+    formData.append("profilePic", file);
+    formData.append("userId", String(user.id));
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/auth/upload-profile-pic", {
+        method: "POST",
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "", // agrega token si existe
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Construye URL completa si el backend devuelve ruta relativa
+        const fullUrl = `http://localhost:5000${data.profile_pic}`;
+          setProfilePic(fullUrl);
+
+
+        setProfilePic(fullUrl); // actualiza la imagen en pantalla
+        setUser({
+          ...user,
+          profile_pic: fullUrl,
+          username: data.username,
+          balance: data.balance,
+        });
+
+        // Actualiza localStorage para mantener sesión tras refresco
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("balance", String(data.balance));
+        localStorage.setItem("userId", String(data.id));
+
+        alert("Foto de perfil actualizada ✅");
+      } else {
+        alert(data.error || "Error al subir foto");
+      }
+    } catch (err) {
+      console.error("Error al subir imagen:", err);
+      alert("Error de conexión con el servidor");
+    }
   };
 
   return (
@@ -87,11 +134,7 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
       <h2>👤 Mi Cuenta</h2>
 
       <div className="profile-section">
-        <img
-          src={profilePic || "/default-avatar.png"}
-          alt="Perfil"
-          className="profile-pic"
-        />
+        <img src={profilePic} alt="Perfil" className="profile-pic" />
         <input type="file" accept="image/*" onChange={handleImageUpload} />
       </div>
 
