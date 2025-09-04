@@ -134,9 +134,27 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
       <h2>👤 Mi Cuenta</h2>
 
       <div className="profile-section">
-        <img src={profilePic} alt="Perfil" className="profile-pic" />
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-      </div>
+        {profilePic && !profilePic.includes("default-profile.png") ? (
+          <img src={profilePic} alt="Perfil" className="profile-pic" />
+        ) : (
+          <div className="empty-profile"></div>
+        )}
+
+        {/* Input oculto */}
+        <input 
+          type="file" 
+          accept="image/*" 
+          id="fileInput" 
+          onChange={handleImageUpload} 
+          style={{ display: "none" }}
+        />
+
+  {/* Botón estilizado */}
+  <label htmlFor="fileInput" className="upload-btn">
+    📸 Subir foto
+  </label>
+</div>
+
 
       <div className="info">
         <p><strong>Usuario:</strong> {user.username}</p>

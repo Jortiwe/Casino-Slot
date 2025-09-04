@@ -2,12 +2,12 @@
 .hero {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* centra vertical */
-  align-items: center; /* centra horizontal */
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  height: 100vh; /* ocupa toda la pantalla */
+  min-height: 100vh; /* 👈 en lugar de height */
   padding: 0 2rem;
-  background: linear-gradient(135deg, #111, #222); /* opcional: un fondo */
+  background: linear-gradient(135deg, #111, #222);
   color: white;
 }
 
@@ -38,12 +38,12 @@
 .games {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* centra vertical */
-  align-items: center; /* centra horizontal */
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  height: 100vh; /* ocupa toda la pantalla */
+  min-height: 100vh; /* 👈 en lugar de height */
   padding: 0 2rem;
-  background: linear-gradient(135deg, #111, #222); /* opcional: un fondo */
+  background: linear-gradient(135deg, #111, #222);
   color: white;
 }
 

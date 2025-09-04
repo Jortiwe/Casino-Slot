@@ -185,44 +185,49 @@ export default function JuegoRuleta({
   };
 
   const girar = () => {
-    if (!apuesta) return alert("Selecciona una apuesta primero");
-    if (cantidad <= 0) return alert("Debes apostar una cantidad mayor a 0");
-    if (cantidad > balance) return alert("No tienes suficiente saldo");
+  if (!apuesta) return alert("Selecciona una apuesta primero");
+  if (cantidad <= 0) return alert("Debes apostar una cantidad mayor a 0");
+  if (cantidad > balance) return alert("No tienes suficiente saldo");
 
-    // ⚡ Descontar apuesta de inmediato
-    const saldoPostApuesta = balance - cantidad;
-    setBalance(saldoPostApuesta);
-    actualizarSaldoBD(saldoPostApuesta);
-    setResultado(null);
+  // ⚡ Descontar apuesta de inmediato
+  const saldoPostApuesta = balance - cantidad;
+  setBalance(saldoPostApuesta);
+  actualizarSaldoBD(saldoPostApuesta);
+  setResultado(null);
 
-    const numero = Math.floor(Math.random() * 37);
-    const index = ordenNumeros.indexOf(numero);
-    const gradosPorNumero = 360 / ordenNumeros.length;
-    const vueltas = 5 * 360;
-    const destino = vueltas + (360 - index * gradosPorNumero);
+  const numero = Math.floor(Math.random() * 37);
+  const index = ordenNumeros.indexOf(numero);
+  const gradosPorNumero = 360 / ordenNumeros.length;
+  const vueltas = 5 * 360;
+  const destino = vueltas + (360 - index * gradosPorNumero);
 
-    setRotacion(0);
+  setRotacion(0);
+  setTimeout(() => {
+    setGirando(true);
+    setRotacion(destino);
+
     setTimeout(() => {
-      setGirando(true);
-      setRotacion(destino);
+      setGirando(false);
 
-      setTimeout(() => {
-        setGirando(false);
+      // 🔹 Calcular ganancia
+      const ganancia = calcularPago(apuesta, numero, cantidad);
+      let saldoFinal = saldoPostApuesta;
 
-        // 🔹 Calcular ganancia
-        const ganancia = calcularPago(apuesta, numero, cantidad);
-        let saldoFinal = saldoPostApuesta;
-        if (ganancia > 0) {
-          saldoFinal += ganancia + cantidad; // incluye apuesta inicial
-          setResultado(`🎉 ¡Ganaste! Salió ${numero}, cobraste ${ganancia}`);
-        } else {
-          setResultado(`❌ Perdiste. Salió ${numero}`);
-        }
+      if (ganancia > 0) {
+        // Sumar solo la ganancia, no la apuesta inicial
+        saldoFinal += ganancia;
+        setResultado(`🎉 ¡Ganaste! Salió ${numero}, cobraste ${ganancia}`);
+      } else {
+        setResultado(`❌ Perdiste. Salió ${numero}`);
+      }
 
-        actualizarSaldoBD(saldoFinal);
-      }, 8000);
-    }, 50);
-  };
+      // Actualizar saldo en backend y estado
+      actualizarSaldoBD(saldoFinal);
+      setBalance(saldoFinal);
+    }, 8000);
+  }, 50);
+};
+
 
   return (
   <div className="juego">

@@ -20,6 +20,7 @@ interface HeaderProps {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   setBalance: React.Dispatch<React.SetStateAction<number>>;
   setUserId: React.Dispatch<React.SetStateAction<number>>;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
   scrollToGames: () => void;
   scrollToHero: () => void;
   onLogout: () => void;
@@ -32,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({
   setUsername,
   setBalance,
   setUserId,
+  setEmail,
   scrollToGames,
   scrollToHero,
   onLogout,
@@ -44,15 +46,12 @@ const Header: React.FC<HeaderProps> = ({
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
 
-  // Errores en tiempo real
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [serverError, setServerError] = useState("");
 
-  // Regex para validar
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
 
-  // 🔹 Validación en tiempo real
   const validateRealtime = (field: string, value: string) => {
     let message = "";
 
@@ -76,7 +75,6 @@ const Header: React.FC<HeaderProps> = ({
     setErrors((prev) => ({ ...prev, [field]: message }));
   };
 
-  // 🔹 Registro
   const handleRegister = async () => {
     if (Object.values(errors).some((msg) => msg)) return;
 
@@ -91,12 +89,14 @@ const Header: React.FC<HeaderProps> = ({
       setUsername(user.username);
       setBalance(user.balance);
       setUserId(user.id);
+      setEmail(user.email);
       setIsLoggedIn(true);
 
       localStorage.setItem("token", token);
       localStorage.setItem("balance", String(user.balance));
       localStorage.setItem("userId", String(user.id));
       localStorage.setItem("username", user.username);
+      localStorage.setItem("email", user.email); 
 
       setShowRegister(false);
       setUsernameInput("");
@@ -111,7 +111,6 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  // 🔹 Login
   const handleLogin = async () => {
     if (Object.values(errors).some((msg) => msg)) return;
 
@@ -126,12 +125,14 @@ const Header: React.FC<HeaderProps> = ({
       setUsername(user.username);
       setBalance(user.balance);
       setUserId(user.id);
+      setEmail(user.email);
       setIsLoggedIn(true);
 
       localStorage.setItem("token", token);
       localStorage.setItem("balance", String(user.balance));
       localStorage.setItem("userId", String(user.id));
       localStorage.setItem("username", user.username);
+      localStorage.setItem("email", user.email);
 
       setShowLogin(false);
       setEmailInput("");
@@ -145,18 +146,9 @@ const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  // 🔹 Logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("balance");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("username");
-    onLogout();
-  };
-
   return (
     <header className="header">
-      <h1 className="logo" onClick={scrollToHero} style={{ cursor: "pointer" }}>
+      <h1 className="logo" onClick={scrollToHero}>
         CASINO
       </h1>
 
@@ -176,7 +168,7 @@ const Header: React.FC<HeaderProps> = ({
           </>
         ) : (
           <div className="user-info">
-            <button className="logout-btn" onClick={handleLogout}>Cerrar Sesión</button>
+            <button className="logout-btn" onClick={onLogout}>Cerrar Sesión</button>
           </div>
         )}
       </div>
@@ -195,7 +187,7 @@ const Header: React.FC<HeaderProps> = ({
                 setUsernameInput(e.target.value);
                 validateRealtime("username", e.target.value);
               }}
-              style={{ borderColor: errors.username ? "red" : undefined }}
+              className={errors.username ? "input-error" : ""}
             />
             {errors.username && <p className="error-text">{errors.username}</p>}
 
@@ -207,7 +199,7 @@ const Header: React.FC<HeaderProps> = ({
                 setEmailInput(e.target.value);
                 validateRealtime("email", e.target.value);
               }}
-              style={{ borderColor: errors.email ? "red" : undefined }}
+              className={errors.email ? "input-error" : ""}
             />
             {errors.email && <p className="error-text">{errors.email}</p>}
 
@@ -219,13 +211,13 @@ const Header: React.FC<HeaderProps> = ({
                 setPasswordInput(e.target.value);
                 validateRealtime("password", e.target.value);
               }}
-              style={{ borderColor: errors.password ? "red" : undefined }}
+              className={errors.password ? "input-error" : ""}
             />
             {errors.password && <p className="error-text">{errors.password}</p>}
 
             {serverError && <p className="error-text">{serverError}</p>}
 
-            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+            <div className="modal-buttons">
               <button className="modal-btn" onClick={handleRegister}>Registrarse</button>
               <button className="close-btn" onClick={() => setShowRegister(false)}>Cancelar</button>
             </div>
@@ -247,7 +239,7 @@ const Header: React.FC<HeaderProps> = ({
                 setEmailInput(e.target.value);
                 validateRealtime("email", e.target.value);
               }}
-              style={{ borderColor: errors.email ? "red" : undefined }}
+              className={errors.email ? "input-error" : ""}
             />
             {errors.email && <p className="error-text">{errors.email}</p>}
 
@@ -259,13 +251,13 @@ const Header: React.FC<HeaderProps> = ({
                 setPasswordInput(e.target.value);
                 validateRealtime("password", e.target.value);
               }}
-              style={{ borderColor: errors.password ? "red" : undefined }}
+              className={errors.password ? "input-error" : ""}
             />
             {errors.password && <p className="error-text">{errors.password}</p>}
 
             {serverError && <p className="error-text">{serverError}</p>}
 
-            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+            <div className="modal-buttons">
               <button className="modal-btn" onClick={handleLogin}>Iniciar Sesión</button>
               <button className="close-btn" onClick={() => setShowLogin(false)}>Cancelar</button>
             </div>
