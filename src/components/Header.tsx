@@ -77,6 +77,7 @@ const Header: React.FC<HeaderProps> = ({
       localStorage.setItem("token", token);
       localStorage.setItem("balance", String(user.balance));
       localStorage.setItem("userId", String(user.id));
+      localStorage.setItem("username", user.username);
 
       setShowRegister(false);
       setUsernameInput("");
@@ -114,6 +115,7 @@ const Header: React.FC<HeaderProps> = ({
       localStorage.setItem("token", token);
       localStorage.setItem("balance", String(user.balance));
       localStorage.setItem("userId", String(user.id));
+      localStorage.setItem("username", user.username);
 
       setShowLogin(false);
       setEmailInput("");
@@ -133,6 +135,7 @@ const Header: React.FC<HeaderProps> = ({
     localStorage.removeItem("token");
     localStorage.removeItem("balance");
     localStorage.removeItem("userId");
+    localStorage.removeItem("username");
     onLogout();
   };
 
