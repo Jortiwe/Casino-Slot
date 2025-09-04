@@ -2,7 +2,7 @@
 .game-cards-container {
   display: flex;
   justify-content: center;
-  align-items: stretch; /* hace que todas las cards tengan la misma altura */
+  align-items: stretch; /* todas las cards tienen la misma altura */
   gap: 2rem;
   width: 100%;
   margin-top: 2rem;
@@ -10,13 +10,14 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  flex-wrap: wrap; /* permite que las cards bajen de fila en pantallas pequeñas */
 }
 
 /* CADA CARD */
 .game-card {
-  flex: 1; /* que cada card ocupe igual */
-  max-width: 300px; /* en escritorio */
-  min-width: 200px; /* en móvil */
+  flex: 1 1 300px; /* crece, encoge, pero mínimo 200px */
+  max-width: 500px; /* en escritorio */
+  min-width: 300px; /* en móvil y tablet */
   background: #1F1F1F;
   border: 2px solid #FFD700;
   border-radius: 16px;
@@ -33,7 +34,7 @@
 }
 
 .game-icon {
-  font-size: 4rem; /* más grande */
+  font-size: 4rem;
   margin-bottom: 1.5rem;
 }
 
@@ -64,18 +65,22 @@
   .game-cards-container {
     flex-direction: column;
     align-items: center;
+    gap: 1.5rem; /* un poco más compacto */
   }
+
   .game-card {
     max-width: 90%;
-    min-width: unset;
-    margin-bottom: 2rem;
+    min-width: 400px; /* ahora mantiene un tamaño mínimo decente */
   }
+
   .game-icon {
     font-size: 5rem;
   }
+
   .game-card h2 {
     font-size: 1.8rem;
   }
+
   .game-card button {
     font-size: 1.1rem;
   }
