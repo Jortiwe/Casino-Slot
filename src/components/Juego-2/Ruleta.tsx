@@ -264,29 +264,32 @@ export default function JuegoRuleta({
     </button>
   </div>
 
-  <div className="columna-derecha">
-    <div className="tabla-wrapper">
-      <img src={tablaImg} alt="Tabla" className="tabla-img" />
-      <div className="tabla-overlay">
-        {AREAS.map((area) => (
-          <div
-            key={area.id}
-            className={`area ${apuesta === area.id ? "selected" : ""}`}
-            style={{
-              left: `${area.left}%`,
-              top: `${area.top}%`,
-              width: `${area.width}%`,
-              height: `${area.height}%`,
-            }}
-            onClick={() => setApuesta(area.id)}
-          />
-        ))}
-      </div>
-
-      {apuesta && <p className="resultado">Apuesta seleccionada: {apuesta}</p>}
-      {resultado && <p className="resultado">{resultado}</p>}
+<div className="columna-derecha">
+  <div className="tabla-imagen-wrapper" style={{ position: "relative" }}>
+    <img src={tablaImg} alt="Tabla" className="tabla-img" />
+    <div className="tabla-overlay">
+      {AREAS.map((area) => (
+        <div
+          key={area.id}
+          className={`area ${apuesta === area.id ? "selected" : ""}`}
+          style={{
+            left: `${area.left}%`,
+            top: `${area.top}%`,
+            width: `${area.width}%`,
+            height: `${area.height}%`,
+          }}
+          onClick={() => setApuesta(area.id)}
+        />
+      ))}
     </div>
   </div>
+
+  <div className="resultados">
+    {apuesta && <p className="resultado">Apuesta seleccionada: {apuesta}</p>}
+    {resultado && <p className="resultado">{resultado}</p>}
+  </div>
+</div>
+
 </div>
   );
 }

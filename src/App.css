@@ -1,11 +1,18 @@
 /* HERO */
 .hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centra vertical */
+  align-items: center; /* centra horizontal */
   text-align: center;
-  padding: 6rem 2rem;
+  height: 100vh; /* ocupa toda la pantalla */
+  padding: 0 2rem;
+  background: linear-gradient(135deg, #111, #222); /* opcional: un fondo */
+  color: white;
 }
 
 .hero-title {
-  font-size: 3rem;
+  font-size: 4rem; /* más grande */
   margin-bottom: 2rem;
   font-weight: bold;
 }
@@ -13,10 +20,10 @@
 .main-btn {
   background: #FFD700;
   border: none;
-  padding: 1rem 2.5rem;
+  padding: 1.2rem 3rem;
   border-radius: 16px;
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   cursor: pointer;
   transition: 0.3s;
 }
@@ -26,13 +33,18 @@
   color: white;
 }
 
+
 /* GAMES */
 .games {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  padding: 2rem 1rem;
+  flex-direction: column;
+  justify-content: center; /* centra vertical */
+  align-items: center; /* centra horizontal */
+  text-align: center;
+  height: 100vh; /* ocupa toda la pantalla */
+  padding: 0 2rem;
+  background: linear-gradient(135deg, #111, #222); /* opcional: un fondo */
+  color: white;
 }
 
 .login-warning {

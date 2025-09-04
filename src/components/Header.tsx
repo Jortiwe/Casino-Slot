@@ -23,7 +23,7 @@ interface HeaderProps {
   scrollToGames: () => void;
   scrollToHero: () => void;
   onLogout: () => void;
-  onMyAccount: () => void; 
+  onMyAccount: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -44,21 +44,41 @@ const Header: React.FC<HeaderProps> = ({
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
 
-  const [errorFields, setErrorFields] = useState<{[key: string]: boolean}>({});
+  // Errores en tiempo real
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [serverError, setServerError] = useState("");
 
-  // 🔹 Validación simple de inputs vacíos
-  const validateInputs = (fields: {[key: string]: string}) => {
-    const errors: {[key: string]: boolean} = {};
-    Object.keys(fields).forEach(key => {
-      errors[key] = !fields[key].trim();
-    });
-    setErrorFields(errors);
-    return !Object.values(errors).some(Boolean);
+  // Regex para validar
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
+
+  // 🔹 Validación en tiempo real
+  const validateRealtime = (field: string, value: string) => {
+    let message = "";
+
+    if (field === "username") {
+      if (!value.trim()) message = "El usuario es obligatorio";
+      else if (value.length > 50) message = "Máx. 50 caracteres";
+    }
+
+    if (field === "email") {
+      if (!value.trim()) message = "El correo es obligatorio";
+      else if (!emailRegex.test(value)) message = "Correo inválido (ej: usuario@mail.com)";
+    }
+
+    if (field === "password") {
+      if (!value.trim()) message = "La contraseña es obligatoria";
+      else if (!passwordRegex.test(value)) {
+        message = "Debe tener mínimo 8 caracteres, 1 mayúscula, 1 número";
+      }
+    }
+
+    setErrors((prev) => ({ ...prev, [field]: message }));
   };
 
-  // 🔹 Registro con inicio automático de sesión
+  // 🔹 Registro
   const handleRegister = async () => {
-    if (!validateInputs({ username: usernameInput, email: emailInput, password: passwordInput })) return;
+    if (Object.values(errors).some((msg) => msg)) return;
 
     try {
       const response = await axios.post<AuthResponse>(
@@ -68,9 +88,8 @@ const Header: React.FC<HeaderProps> = ({
 
       const { user, token } = response.data;
 
-      // Actualizar estado global y localStorage
       setUsername(user.username);
-      setBalance(user.balance); // 100 inicial
+      setBalance(user.balance);
       setUserId(user.id);
       setIsLoggedIn(true);
 
@@ -83,21 +102,18 @@ const Header: React.FC<HeaderProps> = ({
       setUsernameInput("");
       setEmailInput("");
       setPasswordInput("");
-      setErrorFields({});
-
-      alert(`¡Registro exitoso! Se te ha asignado ${user.balance}$ de saldo inicial.`);
+      setErrors({});
+      setServerError("");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        alert(err.response?.data?.error || "Error al registrarse");
-      } else {
-        alert("Error inesperado al registrarse");
+        setServerError(err.response?.data?.error || "Error al registrarse");
       }
     }
   };
 
   // 🔹 Login
   const handleLogin = async () => {
-    if (!validateInputs({ email: emailInput, password: passwordInput })) return;
+    if (Object.values(errors).some((msg) => msg)) return;
 
     try {
       const response = await axios.post<AuthResponse>(
@@ -120,12 +136,11 @@ const Header: React.FC<HeaderProps> = ({
       setShowLogin(false);
       setEmailInput("");
       setPasswordInput("");
-      setErrorFields({});
+      setErrors({});
+      setServerError("");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        alert(err.response?.data?.error || "Error al iniciar sesión");
-      } else {
-        alert("Error inesperado al iniciar sesión");
+        setServerError(err.response?.data?.error || "Error al iniciar sesión");
       }
     }
   };
@@ -141,12 +156,9 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="header">
-      <h1 
-        className="logo" 
-        onClick={scrollToHero} 
-        style={{ cursor: "pointer" }}
-        >CASINO</h1>
-
+      <h1 className="logo" onClick={scrollToHero} style={{ cursor: "pointer" }}>
+        CASINO
+      </h1>
 
       <nav className="nav">
         <a href="#" onClick={(e) => { e.preventDefault(); scrollToHero(); }}>Inicio</a>
@@ -156,7 +168,6 @@ const Header: React.FC<HeaderProps> = ({
         )}
       </nav>
 
-
       <div className="auth-buttons">
         {!isLoggedIn ? (
           <>
@@ -165,7 +176,6 @@ const Header: React.FC<HeaderProps> = ({
           </>
         ) : (
           <div className="user-info">
-            
             <button className="logout-btn" onClick={handleLogout}>Cerrar Sesión</button>
           </div>
         )}
@@ -176,27 +186,45 @@ const Header: React.FC<HeaderProps> = ({
         <div className="modal" onClick={() => setShowRegister(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Registrarse</h2>
+
             <input
               type="text"
-              placeholder="Usuario"
+              placeholder="Ej: Usuario123"
               value={usernameInput}
-              onChange={(e) => setUsernameInput(e.target.value)}
-              style={{ borderColor: errorFields.username ? 'red' : undefined }}
+              onChange={(e) => {
+                setUsernameInput(e.target.value);
+                validateRealtime("username", e.target.value);
+              }}
+              style={{ borderColor: errors.username ? "red" : undefined }}
             />
+            {errors.username && <p className="error-text">{errors.username}</p>}
+
             <input
               type="email"
-              placeholder="Correo electrónico"
+              placeholder="ejemplo@correo.com"
               value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
-              style={{ borderColor: errorFields.email ? 'red' : undefined }}
+              onChange={(e) => {
+                setEmailInput(e.target.value);
+                validateRealtime("email", e.target.value);
+              }}
+              style={{ borderColor: errors.email ? "red" : undefined }}
             />
+            {errors.email && <p className="error-text">{errors.email}</p>}
+
             <input
               type="password"
-              placeholder="Contraseña"
+              placeholder="Min. 8 caracteres, 1 mayúscula, 1 número"
               value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-              style={{ borderColor: errorFields.password ? 'red' : undefined }}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                validateRealtime("password", e.target.value);
+              }}
+              style={{ borderColor: errors.password ? "red" : undefined }}
             />
+            {errors.password && <p className="error-text">{errors.password}</p>}
+
+            {serverError && <p className="error-text">{serverError}</p>}
+
             <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
               <button className="modal-btn" onClick={handleRegister}>Registrarse</button>
               <button className="close-btn" onClick={() => setShowRegister(false)}>Cancelar</button>
@@ -210,20 +238,33 @@ const Header: React.FC<HeaderProps> = ({
         <div className="modal" onClick={() => setShowLogin(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h2>Iniciar Sesión</h2>
+
             <input
               type="email"
-              placeholder="Correo electrónico"
+              placeholder="ejemplo@correo.com"
               value={emailInput}
-              onChange={(e) => setEmailInput(e.target.value)}
-              style={{ borderColor: errorFields.email ? 'red' : undefined }}
+              onChange={(e) => {
+                setEmailInput(e.target.value);
+                validateRealtime("email", e.target.value);
+              }}
+              style={{ borderColor: errors.email ? "red" : undefined }}
             />
+            {errors.email && <p className="error-text">{errors.email}</p>}
+
             <input
               type="password"
-              placeholder="Contraseña"
+              placeholder="Tu contraseña"
               value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-              style={{ borderColor: errorFields.password ? 'red' : undefined }}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                validateRealtime("password", e.target.value);
+              }}
+              style={{ borderColor: errors.password ? "red" : undefined }}
             />
+            {errors.password && <p className="error-text">{errors.password}</p>}
+
+            {serverError && <p className="error-text">{serverError}</p>}
+
             <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
               <button className="modal-btn" onClick={handleLogin}>Iniciar Sesión</button>
               <button className="close-btn" onClick={() => setShowLogin(false)}>Cancelar</button>

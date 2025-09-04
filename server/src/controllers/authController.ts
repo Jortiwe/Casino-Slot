@@ -10,6 +10,8 @@ import fs from "fs";
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET!;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,}$/;
 
 // 🔹 Función auxiliar para mostrar error en consola
 function handleError(err: unknown) {
@@ -45,16 +47,36 @@ interface JwtPayloadWithId extends JwtPayload {
 // ===================================
 export const register = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
+
+  // Validaciones
   if (!username || !email || !password) {
-    return res.status(400).json({ error: "Faltan datos" });
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+  if (username.length > 50) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ error: "Datos inválidos" });
   }
 
   try {
+    // Chequear si el usuario o email ya existen
+    const checkUser = await pool.query(
+      "SELECT id FROM users WHERE username=$1 OR email=$2",
+      [username, email]
+    );
+    if (checkUser.rows.length > 0) {
+      return res.status(400).json({ error: "Datos inválidos" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
       "INSERT INTO users (username, email, password, balance) VALUES ($1, $2, $3, $4) RETURNING id, username, email, balance, profile_pic",
-      [username, email, hashedPassword, 100] // saldo inicial 100
+      [username, email, hashedPassword, 100] // saldo inicial
     );
 
     const user = result.rows[0];
@@ -70,9 +92,9 @@ export const register = async (req: Request, res: Response) => {
         profile_pic: user.profile_pic || null,
       },
     });
-  } catch (err: unknown) {
-    console.error("Error en register:", handleError(err));
-    res.status(400).json({ error: "Usuario o email ya existe" });
+  } catch (err) {
+    console.error("Error en register:", err);
+    res.status(500).json({ error: "Error en el servidor" });
   }
 };
 
@@ -81,16 +103,16 @@ export const register = async (req: Request, res: Response) => {
 // ===================================
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: "Faltan datos" });
+  if (!email || !password) return res.status(400).json({ error: "Datos inválidos" });
 
   try {
     const result = await pool.query("SELECT * FROM users WHERE email=$1", [email]);
     if (result.rows.length === 0)
-      return res.status(400).json({ error: "Usuario no encontrado" });
+      return res.status(400).json({ error: "Datos inválidos" });
 
     const user = result.rows[0];
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ error: "Contraseña incorrecta" });
+    if (!isMatch) return res.status(400).json({ error: "Datos inválidos" });
 
     const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: "1h" });
 
@@ -109,7 +131,6 @@ export const login = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error en el servidor" });
   }
 };
-
 // ===================================
 // 🔹 Actualizar saldo
 // ===================================
@@ -136,7 +157,11 @@ export const updateBalance = async (req: Request, res: Response) => {
 export const changePassword = async (req: Request, res: Response) => {
   const { userId, newPassword } = req.body;
   if (!userId || !newPassword)
-    return res.status(400).json({ error: "Faltan datos" });
+    return res.status(400).json({ error: "Datos inválidos" });
+
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
 
   try {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -145,12 +170,11 @@ export const changePassword = async (req: Request, res: Response) => {
       [hashedPassword, userId]
     );
     res.json(result.rows[0]);
-  } catch (err: unknown) {
-    console.error("Error en changePassword:", handleError(err));
-    res.status(500).json({ error: "Error al cambiar contraseña" });
+  } catch (err) {
+    console.error("Error en changePassword:", err);
+    res.status(500).json({ error: "Error en el servidor" });
   }
 };
-
 // ===================================
 // 🔹 Subir foto de perfil
 // ===================================
