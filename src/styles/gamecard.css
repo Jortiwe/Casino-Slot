@@ -14,8 +14,8 @@
 /* CARD */
 .game-card {
   width: 100%;
-  max-width: 500px;   /* 👈 que se vean grandes */
-  min-height: 400px;  /* altura mayor */
+  max-width: 500px;   
+  min-height: 400px;  
   background: #1F1F1F;
   border: 2px solid #FFD700;
   border-radius: 16px;
@@ -61,7 +61,7 @@
 /* RESPONSIVO */
 @media (max-width: 1024px) {
   .game-cards-container {
-    grid-template-columns: 1fr; /* en pantallas medianas → 1 por fila */
+    grid-template-columns: 1fr; 
   }
 
   .game-card {

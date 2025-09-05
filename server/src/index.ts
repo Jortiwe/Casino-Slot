@@ -1,15 +1,13 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import authRoutes from "./routes/authRoutes"; // rutas de register/login
-
+import authRoutes from "./routes/authRoutes"; 
 const app = express();
 const PORT = 5000;
 
 // Middlewares
-app.use(cors());          // permite solicitudes desde cualquier origen
-app.use(express.json());  // permite recibir JSON en el body
-
+app.use(cors());          
+app.use(express.json());  
 // Ruta raíz de prueba
 app.get("/", (req, res) => {
   res.send("Backend funcionando correctamente");

@@ -17,7 +17,7 @@ interface UserData {
   email: string;
   balance: number;
 }
-
+//  Variables de la base de datos 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("Usuario");
@@ -34,7 +34,7 @@ const App: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const gamesRef = useRef<HTMLDivElement>(null);
 
-  // 🔹 Restaurar sesión desde localStorage
+  //  Restaurar sesión desde localStorage
   useEffect(() => {
     const token = localStorage.getItem("token");
     const storedUsername = localStorage.getItem("username");
@@ -68,7 +68,7 @@ const App: React.FC = () => {
     }
   }, [activeGame]);
 
-  // 🔹 Traer saldo actualizado desde servidor y sincronizar con estado y localStorage
+  //  Traer saldo actualizado desde servidor y sincronizar con estado y localStorage
   useEffect(() => {
     if (!userId) return;
 
@@ -98,14 +98,14 @@ const App: React.FC = () => {
 
     fetchBalance();
   }, [userId]);
-
+// para cerrar el juego activo 
   const scrollToHero = () => {
     setActivePage("home");
-    setActiveGame(null); // ❌ Cierra cualquier juego activo
+    setActiveGame(null); 
   };
-  
+  // para abrir la seccion de juegos
   const scrollToGames = () => setActivePage("games");
-
+// para seleccionar el juego
   const handleSelectGame = (game: "slot" | "ruleta" | "blackjack" | "other") => {
     if (!isLoggedIn) {
       alert("Debe iniciar sesión para jugar");
@@ -113,19 +113,34 @@ const App: React.FC = () => {
     }
     setActiveGame(game);
   };
-
+// para volver a la seccion de juegos
   const handleBackToGames = () => {
     setActiveGame(null);
     setActivePage("games");
   };
+// para cerrar sesion y guardar el saldo en la base de datos
+  const handleLogout = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-  const handleLogout = () => {
+    if (userId && token) {
+      // Intentar guardar saldo
+      await axios.put(
+        `http://localhost:5000/users/${userId}/balance`,
+        { balance },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    }
+  } catch (err) {
+    console.warn("No se pudo guardar el saldo, pero se cerrará sesión de todas formas.", err);
+  } finally {
+    // Limpiar todo siempre
     setIsLoggedIn(false);
     setActiveGame(null);
     setUsername("");
-    setBalance(0);     
+    setBalance(0);
     setUserId(0);
-    setEmail("");       
+    setEmail("");
     localStorage.removeItem("token");
     localStorage.removeItem("username");
     localStorage.removeItem("balance");
@@ -133,7 +148,9 @@ const App: React.FC = () => {
     localStorage.removeItem("activePage");
     localStorage.removeItem("activeGame");
     setActivePage("home");
-  };
+  }
+};
+
 
   const renderActiveGame = () => {
     if (!activeGame) return null;

@@ -1,4 +1,3 @@
-// authController.ts
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -76,7 +75,7 @@ export const register = async (req: Request, res: Response) => {
 
     const result = await pool.query(
       "INSERT INTO users (username, email, password, balance) VALUES ($1, $2, $3, $4) RETURNING id, username, email, balance, profile_pic",
-      [username, email, hashedPassword, 100] // saldo inicial
+      [username, email, hashedPassword, 100] 
     );
 
     const user = result.rows[0];
@@ -190,7 +189,7 @@ export const uploadProfilePic = async (req: Request, res: Response) => {
     "UPDATE users SET profile_pic=$1 WHERE id=$2 RETURNING id, username, email, balance, profile_pic",
     [profilePicPath, userId]
   );
-  res.json(result.rows[0]); // Aquí viene la ruta actualizada // ruta relativa para express.static
+  res.json(result.rows[0]); 
 
   try {
     const result = await pool.query(

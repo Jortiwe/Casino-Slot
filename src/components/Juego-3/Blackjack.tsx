@@ -185,10 +185,10 @@ export default function Blackjack({
     if (playerScore > 21) {
       setMessage("Te pasaste. Pierdes 😢");
     } else if (dealerScore > 21 || playerScore > dealerScore) {
-      saldoFinal += bet * 2; // ganancia + apuesta inicial
+      saldoFinal += bet * 2; 
       setMessage("¡Ganaste! 🎉");
     } else if (dealerScore === playerScore) {
-      saldoFinal += bet; // devolver apuesta
+      saldoFinal += bet; 
       setMessage("Empate 🤝");
     } else {
       setMessage("La banca gana 💀");

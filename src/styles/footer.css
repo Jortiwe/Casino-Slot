@@ -16,7 +16,7 @@ body, html {
   display: flex;
   flex-direction: column;
   padding: 2rem;
-  padding-bottom: 5rem; /* espacio extra antes del footer */
+  padding-bottom: 5rem; 
   box-sizing: border-box;
 }
 

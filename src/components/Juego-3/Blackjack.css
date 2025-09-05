@@ -8,15 +8,15 @@
 
 /* Contenedor interno del juego */
 .blackjack-container {
-  background: #1f3b2e; /* verde mesa */
-  border: 6px solid #6b4b2c; /* borde café */
+  background: #1f3b2e; 
+  border: 6px solid #6b4b2c; 
   border-radius: 16px;
   padding: 20px;
   width: 520px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: white; /* texto general */
+  color: white; 
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
@@ -47,8 +47,8 @@
   gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  perspective: 600px; /* para flip 3D */
-  min-height: 100px; /* evita que todo se mueva */
+  perspective: 600px; 
+  min-height: 100px;
 }
 
 /* Cartas */
@@ -141,7 +141,7 @@
   margin-top: 8px;
   text-align: center;
   text-shadow: 0 0 6px rgba(0, 0, 0, 0.7);
-  min-height: 24px; /* evita que el texto mueva todo */
+  min-height: 24px; 
 }
 
 /* Titulos y textos internos */

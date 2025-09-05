@@ -52,7 +52,7 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
     }
   };
 
-  // 🔹 Pedir préstamo
+  //  Pedir préstamo
   const handleLoan = async () => {
     if (loanAmount <= 0) return alert("Ingresa un monto válido");
 
@@ -67,7 +67,7 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
 
       const data = await res.json();
       if (res.ok) {
-        setUser(data); // actualiza usuario global
+        setUser(data); 
         setLoanAmount(0);
         alert("Préstamo acreditado ✅");
       } else {
@@ -106,7 +106,7 @@ const MiCuenta: React.FC<MiCuentaProps> = ({ user, setUser }) => {
           setProfilePic(fullUrl);
 
 
-        setProfilePic(fullUrl); // actualiza la imagen en pantalla
+        setProfilePic(fullUrl); 
         setUser({
           ...user,
           profile_pic: fullUrl,

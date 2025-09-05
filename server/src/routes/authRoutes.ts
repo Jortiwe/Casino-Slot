@@ -9,6 +9,6 @@ router.post("/login", login);
 router.post("/balance", updateBalance);
 router.post("/change-password", changePassword);
 router.post("/upload-profile-pic", upload.single("profilePic"), uploadProfilePic);
-router.get("/me", getMe); // 🔹 Ahora sí funciona
+router.get("/me", getMe); 
 
 export default router;

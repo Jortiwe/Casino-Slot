@@ -151,7 +151,7 @@ p {
 
 /* Áreas clicables */
 .area {
-  position: absolute;          /* borde rojo para debug */
+  position: absolute;         
   cursor: pointer;
 }
 

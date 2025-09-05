@@ -1,5 +1,3 @@
-/* SlotMachine.css */
-
 /* Contenedor general */
 .slot-machine-container {
   display: flex;
@@ -23,14 +21,14 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.6); /* oscurece el fondo */
+  background: rgba(0,0,0,0.6); 
   z-index: 0;
 }
 
 .slot-machine-container > * {
   position: relative;
-  z-index: 1; /* asegura que los hijos estén encima del overlay */
-  color: white; /* texto en blanco para contraste */
+  z-index: 1; 
+  color: white; 
 }
 
 /* Saldo y apuesta */
